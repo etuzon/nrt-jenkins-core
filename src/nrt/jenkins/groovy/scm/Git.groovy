@@ -90,10 +90,22 @@ class Git {
 
         def process = processDataList[0]
 
-        if (process.exitValue() != 0) {
-            def error = processDataList[2].toString()
+        def error = processDataList[2].toString()
 
+        if (process.exitValue() != 0) {
             logger.fatal("git pull output: ${error}")
+            throw new Exception("Git pull failed in [${dir.path}]")
+        }
+
+        if (error) {
+            logger.fatal("git pull output: ${error}")
+            throw new Exception("Git pull failed in [${dir.path}]")
+        }
+
+        def output = processDataList[1].toString()
+
+        if (output.contains("Aborting")) {
+            logger.fatal("git pull output: ${output}")
             throw new Exception("Git pull failed in [${dir.path}]")
         }
 
