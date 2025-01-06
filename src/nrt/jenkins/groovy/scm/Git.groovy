@@ -16,20 +16,20 @@ class Git {
         this.password = password
     }
 
-    def clone(String remoteRepositoryUrl, String branchName, File dir) {
+    def clone(String remoteRepositoryUrl, String branchName, String destinationDirPath='.') {
 
         def reportRepositoryFullUrl = "https://${username}:${password}@${remoteRepositoryUrl}"
         def reportRepositoryFullUrlToPrint = "https://${username}:****@${remoteRepositoryUrl}"
 
-        def command = "git clone -b ${branchName} ${reportRepositoryFullUrl} ."
-        def commandToPrint = "git clone -b ${branchName} ${reportRepositoryFullUrlToPrint} ."
+        def command = "git clone -b ${branchName} ${reportRepositoryFullUrl} ${destinationDirPath}"
+        def commandToPrint = "git clone -b ${branchName} ${reportRepositoryFullUrlToPrint} ${destinationDirPath}"
 
-        logger.debug("Execute [${commandToPrint}] in [${dir.path}]")
+        logger.debug("Execute [${commandToPrint}]")
 
         NrtProcess nrtProcess = new NrtProcess()
 
         def processDataList =
-                nrtProcess.executeCommand(command, dir, 60000, false, commandToPrint)
+                nrtProcess.executeCommand(command, new File('.'), 60000, false, commandToPrint)
 
         def process = processDataList[0]
 
@@ -37,22 +37,22 @@ class Git {
 
         if (process.exitValue() != 0) {
             logger.fatal("git clone output: ${error}")
-            throw new Exception("Git clone failed in [${dir.path}]")
+            throw new Exception("Git clone failed")
         }
 
         if (error) {
             logger.fatal("git clone output: ${error}")
-            throw new Exception("Git clone failed in [${dir.path}]")
+            throw new Exception("Git clone failed")
         }
 
         def output = processDataList[1].toString()
 
         if (output.contains("fatal")) {
             logger.fatal("git clone output: ${output}")
-            throw new Exception("Git clone failed in [${dir.path}]")
+            throw new Exception("Git clone failed")
         }
 
-        logger.debug("git clone successful in [${dir.path}]")
+        logger.debug("git clone successful")
     }
 
     String fetch(File dir) {
