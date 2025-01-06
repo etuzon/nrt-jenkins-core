@@ -8,18 +8,28 @@ class Git {
 
     String username
     String password
+    String token
     Logger logger
 
-    Git(username, password) {
+    Git(username, password, token) {
         logger = new Logger()
         this.username = username
         this.password = password
+        this.token = token
     }
 
     def clone(String remoteRepositoryUrl, String branchName, String destinationDirPath='.') {
 
-        def reportRepositoryFullUrl = "https://${username}:${password}@${remoteRepositoryUrl}"
-        def reportRepositoryFullUrlToPrint = "https://${username}:****@${remoteRepositoryUrl}"
+        def reportRepositoryFullUrl = ''
+        def reportRepositoryFullUrlToPrint = ''
+
+        if (password || token) {
+            reportRepositoryFullUrl = "https://${username}:${password}@${remoteRepositoryUrl}"
+            reportRepositoryFullUrlToPrint = "https://${username}:****@${remoteRepositoryUrl}"
+        } else {
+            reportRepositoryFullUrl = "https://${token}@${remoteRepositoryUrl}"
+            reportRepositoryFullUrlToPrint = "https://${token}@${remoteRepositoryUrl}"
+        }
 
         def command = "git clone -b ${branchName} ${reportRepositoryFullUrl} ${destinationDirPath}"
         def commandToPrint = "git clone -b ${branchName} ${reportRepositoryFullUrlToPrint} ${destinationDirPath}"
@@ -114,8 +124,16 @@ class Git {
 
     def pull(String remoteRepositoryUrl, String branchName, File dir) {
 
-        def reportRepositoryFullUrl = "https://${username}:${password}@${remoteRepositoryUrl}"
-        def reportRepositoryFullUrlToPrint = "https://${username}:****@${remoteRepositoryUrl}"
+        def reportRepositoryFullUrl = ''
+        def reportRepositoryFullUrlToPrint = ''
+
+        if (password || token) {
+            reportRepositoryFullUrl = "https://${username}:${password}@${remoteRepositoryUrl}"
+            reportRepositoryFullUrlToPrint = "https://${username}:****@${remoteRepositoryUrl}"
+        } else {
+            reportRepositoryFullUrl = "https://${token}@${remoteRepositoryUrl}"
+            reportRepositoryFullUrlToPrint = "https://${token}@${remoteRepositoryUrl}"
+        }
 
         def command = "git pull ${reportRepositoryFullUrl} ${branchName}"
         def commandToPrint = "git pull ${reportRepositoryFullUrlToPrint} ${branchName}"
