@@ -16,6 +16,45 @@ class Git {
         this.password = password
     }
 
+    def clone(String remoteRepositoryUrl, String branchName, String destinationDirPath='.') {
+
+        def reportRepositoryFullUrl = "https://${username}:${password}@${remoteRepositoryUrl}"
+        def reportRepositoryFullUrlToPrint = "https://${username}:****@${remoteRepositoryUrl}"
+
+        def command = "git clone -b ${branchName} ${reportRepositoryFullUrl} ${destinationDirPath}"
+        def commandToPrint = "git clone -b ${branchName} ${reportRepositoryFullUrlToPrint} ${destinationDirPath}"
+
+        logger.debug("Execute [${commandToPrint}]")
+
+        NrtProcess nrtProcess = new NrtProcess()
+
+        def processDataList =
+                nrtProcess.executeCommand(command, dir, 60000, false, commandToPrint)
+
+        def process = processDataList[0]
+
+        def error = processDataList[2].toString()
+
+        if (process.exitValue() != 0) {
+            logger.fatal("git clone output: ${error}")
+            throw new Exception("Git clone failed")
+        }
+
+        if (error) {
+            logger.fatal("git clone output: ${error}")
+            throw new Exception("Git clone failed")
+        }
+
+        def output = processDataList[1].toString()
+
+        if (output.contains("fatal")) {
+            logger.fatal("git clone output: ${output}")
+            throw new Exception("Git clone failed")
+        }
+
+        logger.debug("git clone successful")
+    }
+
     String fetch(File dir) {
 
         def command = "git fetch"
@@ -73,7 +112,7 @@ class Git {
         return processDataList[1].toString()
     }
 
-    def pull(String branchName, File dir, String remoteRepositoryUrl) {
+    def pull(String remoteRepositoryUrl, String branchName, File dir) {
 
         def reportRepositoryFullUrl = "https://${username}:${password}@${remoteRepositoryUrl}"
         def reportRepositoryFullUrlToPrint = "https://${username}:****@${remoteRepositoryUrl}"
@@ -90,10 +129,22 @@ class Git {
 
         def process = processDataList[0]
 
-        if (process.exitValue() != 0) {
-            def error = processDataList[2].toString()
+        def error = processDataList[2].toString()
 
+        if (process.exitValue() != 0) {
             logger.fatal("git pull output: ${error}")
+            throw new Exception("Git pull failed in [${dir.path}]")
+        }
+
+        if (error) {
+            logger.fatal("git pull output: ${error}")
+            throw new Exception("Git pull failed in [${dir.path}]")
+        }
+
+        def output = processDataList[1].toString()
+
+        if (output.contains("Aborting")) {
+            logger.fatal("git pull output: ${output}")
             throw new Exception("Git pull failed in [${dir.path}]")
         }
 
