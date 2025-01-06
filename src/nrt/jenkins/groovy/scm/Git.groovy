@@ -53,11 +53,6 @@ class Git {
             throw new Exception("Git clone failed")
         }
 
-        if (error) {
-            logger.fatal("git clone output: ${error}")
-            throw new Exception("Git clone failed")
-        }
-
         def output = processDataList[1].toString()
 
         if (output.contains("fatal")) {
