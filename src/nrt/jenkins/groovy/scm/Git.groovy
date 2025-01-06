@@ -23,7 +23,7 @@ class Git {
         def reportRepositoryFullUrl = ''
         def reportRepositoryFullUrlToPrint = ''
 
-        if (password) {
+        if (password || token) {
             reportRepositoryFullUrl = "https://${username}:${password}@${remoteRepositoryUrl}"
             reportRepositoryFullUrlToPrint = "https://${username}:****@${remoteRepositoryUrl}"
         } else {
@@ -127,7 +127,7 @@ class Git {
         def reportRepositoryFullUrl = ''
         def reportRepositoryFullUrlToPrint = ''
 
-        if (password) {
+        if (password || token) {
             reportRepositoryFullUrl = "https://${username}:${password}@${remoteRepositoryUrl}"
             reportRepositoryFullUrlToPrint = "https://${username}:****@${remoteRepositoryUrl}"
         } else {
