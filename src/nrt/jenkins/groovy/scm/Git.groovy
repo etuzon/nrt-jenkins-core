@@ -29,7 +29,7 @@ class Git {
         NrtProcess nrtProcess = new NrtProcess()
 
         def processDataList =
-                nrtProcess.executeCommand(command, dir, 60000, false, commandToPrint)
+                nrtProcess.executeCommand(command, new File('.'), 60000, false, commandToPrint)
 
         def process = processDataList[0]
 
