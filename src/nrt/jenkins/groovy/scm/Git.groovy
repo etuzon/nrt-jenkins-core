@@ -16,6 +16,45 @@ class Git {
         this.password = password
     }
 
+    def clone(String remoteRepositoryUrl, String branchName, File dir) {
+
+        def reportRepositoryFullUrl = "https://${username}:${password}@${remoteRepositoryUrl}"
+        def reportRepositoryFullUrlToPrint = "https://${username}:****@${remoteRepositoryUrl}"
+
+        def command = "git clone -b ${branchName} ${reportRepositoryFullUrl} ."
+        def commandToPrint = "git clone -b ${branchName} ${reportRepositoryFullUrlToPrint} ."
+
+        logger.debug("Execute [${commandToPrint}] in [${dir.path}]")
+
+        NrtProcess nrtProcess = new NrtProcess()
+
+        def processDataList =
+                nrtProcess.executeCommand(command, dir, 60000, false, commandToPrint)
+
+        def process = processDataList[0]
+
+        def error = processDataList[2].toString()
+
+        if (process.exitValue() != 0) {
+            logger.fatal("git clone output: ${error}")
+            throw new Exception("Git clone failed in [${dir.path}]")
+        }
+
+        if (error) {
+            logger.fatal("git clone output: ${error}")
+            throw new Exception("Git clone failed in [${dir.path}]")
+        }
+
+        def output = processDataList[1].toString()
+
+        if (output.contains("fatal")) {
+            logger.fatal("git clone output: ${output}")
+            throw new Exception("Git clone failed in [${dir.path}]")
+        }
+
+        logger.debug("git clone successful in [${dir.path}]")
+    }
+
     String fetch(File dir) {
 
         def command = "git fetch"
@@ -73,7 +112,7 @@ class Git {
         return processDataList[1].toString()
     }
 
-    def pull(String branchName, File dir, String remoteRepositoryUrl) {
+    def pull(String remoteRepositoryUrl, String branchName, File dir) {
 
         def reportRepositoryFullUrl = "https://${username}:${password}@${remoteRepositoryUrl}"
         def reportRepositoryFullUrlToPrint = "https://${username}:****@${remoteRepositoryUrl}"
