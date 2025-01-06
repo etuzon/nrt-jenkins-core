@@ -28,7 +28,7 @@ class Git {
             reportRepositoryFullUrlToPrint = "https://${username}:****@${remoteRepositoryUrl}"
         } else if (token) {
             reportRepositoryFullUrl = "https://${token}@${remoteRepositoryUrl}"
-            reportRepositoryFullUrlToPrint = "https://****@${remoteRepositoryUrl}"
+            reportRepositoryFullUrlToPrint = "https://${token}@${remoteRepositoryUrl}"
         } else {
             reportRepositoryFullUrl = "https://${remoteRepositoryUrl}"
             reportRepositoryFullUrlToPrint = "https://${remoteRepositoryUrl}"
