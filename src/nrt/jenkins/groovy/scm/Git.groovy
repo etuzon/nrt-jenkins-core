@@ -23,12 +23,15 @@ class Git {
         def reportRepositoryFullUrl = ''
         def reportRepositoryFullUrlToPrint = ''
 
-        if (password || token) {
+        if (password) {
             reportRepositoryFullUrl = "https://${username}:${password}@${remoteRepositoryUrl}"
             reportRepositoryFullUrlToPrint = "https://${username}:****@${remoteRepositoryUrl}"
-        } else {
+        } else if (token) {
             reportRepositoryFullUrl = "https://${token}@${remoteRepositoryUrl}"
             reportRepositoryFullUrlToPrint = "https://${token}@${remoteRepositoryUrl}"
+        } else {
+            reportRepositoryFullUrl = "https://${remoteRepositoryUrl}"
+            reportRepositoryFullUrlToPrint = "https://${remoteRepositoryUrl}"
         }
 
         def command = "git clone -b ${branchName} ${reportRepositoryFullUrl} ${destinationDirPath}"
@@ -127,12 +130,15 @@ class Git {
         def reportRepositoryFullUrl = ''
         def reportRepositoryFullUrlToPrint = ''
 
-        if (password || token) {
+        if (password) {
             reportRepositoryFullUrl = "https://${username}:${password}@${remoteRepositoryUrl}"
             reportRepositoryFullUrlToPrint = "https://${username}:****@${remoteRepositoryUrl}"
-        } else {
+        } else if (token) {
             reportRepositoryFullUrl = "https://${token}@${remoteRepositoryUrl}"
-            reportRepositoryFullUrlToPrint = "https://${token}@${remoteRepositoryUrl}"
+            reportRepositoryFullUrlToPrint = "https://****@${remoteRepositoryUrl}"
+        } else {
+            reportRepositoryFullUrl = "https://${remoteRepositoryUrl}"
+            reportRepositoryFullUrlToPrint = "https://${remoteRepositoryUrl}"
         }
 
         def command = "git pull ${reportRepositoryFullUrl} ${branchName}"
